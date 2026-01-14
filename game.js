@@ -244,13 +244,12 @@ async function showLeaderboard() {
         const data = await response.json();
 
         leaderboardList.innerHTML = '';
-        if (data.top_10) {
-            data.top_10.forEach(entry => {
-                const li = document.createElement('li');
-                li.innerHTML = `<span class="name">${entry.nickname}</span><span class="score">${entry.score}</span>`;
-                leaderboardList.appendChild(li);
-            });
-        }
+        const scores = data.top_10 || data.top_15 || [];
+        scores.forEach(entry => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="name">${entry.nickname}</span><span class="score">${entry.score}</span>`;
+            leaderboardList.appendChild(li);
+        });
 
         leaderboardModal.classList.add('active');
     } catch (e) {
