@@ -13,8 +13,11 @@ let playerSequence = [];
 let level = 0;
 let score = 0;
 let highscore = parseInt(localStorage.getItem('simonHighscore')) || 0;
+let nickname = localStorage.getItem('simonNickname') || null;
 let isPlaying = false;
 let isShowingSequence = false;
+
+const API_URL = 'http://localhost:5000/api';
 
 // Éléments DOM
 const buttons = document.querySelectorAll('.simon-btn');
@@ -24,6 +27,19 @@ const highscoreDisplay = document.getElementById('highscore');
 const levelDisplay = document.getElementById('level');
 const messageDisplay = document.getElementById('message');
 const bgGlow = document.getElementById('bg-glow');
+
+// Leaderboard DOM Elements
+const highestValue = document.getElementById('highest-value');
+const highestPill = document.getElementById('highest-pill');
+const leaderboardModal = document.getElementById('leaderboard-modal');
+const leaderboardList = document.getElementById('leaderboard-list');
+const closeLeaderboard = document.getElementById('close-modal');
+
+// Nickname DOM Elements
+const nicknameModal = document.getElementById('nickname-modal');
+const nicknameInput = document.getElementById('nickname-input');
+const saveNicknameBtn = document.getElementById('save-nickname');
+const cancelNicknameBtn = document.getElementById('cancel-nickname');
 
 // Couleurs de lueur (RGBS)
 const GLOW_COLORS = {
@@ -109,6 +125,95 @@ function init() {
         btn.disabled = true;
     });
     startBtn.addEventListener('click', startGame);
+
+    // Global Score Events
+    highestPill.addEventListener('click', handleHighestClick);
+    closeLeaderboard.addEventListener('click', () => leaderboardModal.classList.remove('active'));
+    cancelNicknameBtn.addEventListener('click', () => nicknameModal.classList.remove('active'));
+    saveNicknameBtn.addEventListener('click', handleSaveNickname);
+
+    // Fetch initial global score
+    fetchHighestScore();
+}
+
+async function fetchHighestScore() {
+    try {
+        const response = await fetch(`${API_URL}/scores`);
+        const data = await response.json();
+        if (data.highest) {
+            highestValue.textContent = data.highest.nickname;
+        } else {
+            updateHighestDisplay();
+        }
+    } catch (e) {
+        console.error('Failed to fetch highest score:', e);
+        updateHighestDisplay();
+    }
+}
+
+function updateHighestDisplay() {
+    if (nickname) {
+        highestValue.textContent = nickname;
+    } else {
+        highestValue.textContent = 'share your best';
+    }
+}
+
+function handleHighestClick() {
+    if (!nickname || highestValue.textContent === 'share your best') {
+        nicknameModal.classList.add('active');
+        nicknameInput.value = '';
+        nicknameInput.focus();
+    } else {
+        showLeaderboard();
+    }
+}
+
+async function handleSaveNickname() {
+    const newNickname = nicknameInput.value.trim();
+    if (!newNickname) return;
+
+    nickname = newNickname;
+    localStorage.setItem('simonNickname', nickname);
+    nicknameModal.classList.remove('active');
+    updateHighestDisplay();
+
+    // Share current highscore if exists
+    if (highscore > 0) {
+        await shareScore(highscore);
+    }
+}
+
+async function shareScore(scoreToShare) {
+    if (!nickname) return;
+    try {
+        await fetch(`${API_URL}/score`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nickname, score: scoreToShare })
+        });
+        fetchHighestScore();
+    } catch (e) {
+        console.error('Failed to share score:', e);
+    }
+}
+
+async function showLeaderboard() {
+    try {
+        const response = await fetch(`${API_URL}/scores`);
+        const data = await response.json();
+
+        leaderboardList.innerHTML = '';
+        data.top_15.forEach(entry => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="name">${entry.nickname}</span><span class="score">${entry.score}</span>`;
+            leaderboardList.appendChild(li);
+        });
+
+        leaderboardModal.classList.add('active');
+    } catch (e) {
+        console.error('Failed to fetch leaderboard:', e);
+    }
 }
 
 async function startGame() {
@@ -230,6 +335,13 @@ function gameOver() {
         localStorage.setItem('simonHighscore', highscore);
         highscoreDisplay.textContent = highscore;
         setMessage(`New Record: ${score}! 🏆`, 'error');
+
+        // Auto-share if nickname registered
+        if (nickname) {
+            shareScore(highscore);
+        } else {
+            updateHighestDisplay();
+        }
     } else {
         setMessage(`Game Over. Score: ${score}`, 'error');
     }

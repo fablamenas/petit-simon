@@ -30,7 +30,6 @@
     <div class="bg-glow" id="bg-glow"></div>
     <div class="game-container">
         <header>
-            <h1>Petit-Simon</h1>
             <div class="score-container">
                 <div class="score-pill">
                     <span class="label">Score</span>
@@ -40,8 +39,35 @@
                     <span class="label">Best</span>
                     <span class="value" id="highscore">0</span>
                 </div>
+                <div class="score-pill interactive" id="highest-pill">
+                    <span class="label">Highest</span>
+                    <span class="value" id="highest-value">...</span>
+                </div>
             </div>
         </header>
+
+        <!-- Leaderboard Modal -->
+        <div id="leaderboard-modal" class="modal">
+            <div class="modal-content">
+                <h2>Top 15</h2>
+                <ul id="leaderboard-list"></ul>
+                <button class="close-btn" id="close-modal">Close</button>
+            </div>
+        </div>
+
+        <!-- Nickname Modal -->
+        <div id="nickname-modal" class="modal">
+            <div class="modal-content">
+                <h2>Share your best</h2>
+                <p>Register your nickname:</p>
+                <input type="text" id="nickname-input" placeholder="Your nickname" maxlength="15">
+                <div class="modal-actions">
+                    <button class="primary-btn" id="save-nickname">Save</button>
+                    <button class="close-btn" id="cancel-nickname">Cancel</button>
+                </div>
+            </div>
+        </div>
+
 
         <div class="board-wrapper">
             <div class="simon-board">
