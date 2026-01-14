@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-SCORES_FILE = 'scores.json'
+SCORES_FILE = '/home/fabien/Antigravity/projects/petit-simon/scores.json'
 
 def load_scores():
     if os.path.exists(SCORES_FILE):
@@ -18,7 +18,7 @@ def save_scores(scores):
     with open(SCORES_FILE, 'w') as f:
         json.dump(scores, f)
 
-@app.route('/api/scores', methods=['GET'])
+@app.route('/scores', methods=['GET'])
 def get_scores():
     scores = load_scores()
     # Sort by score descending
@@ -30,7 +30,7 @@ def get_scores():
         'highest': highest
     })
 
-@app.route('/api/score', methods=['POST'])
+@app.route('/score', methods=['POST'])
 def add_score():
     data = request.json
     nickname = data.get('nickname')
