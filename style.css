@@ -28,6 +28,31 @@ body {
     font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
     color: var(--text-primary);
     overflow: hidden;
+    position: relative;
+    touch-action: pan-y;
+}
+
+body.refreshing::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    background-size: 200% 100%;
+    animation: refresh-loading 1.5s infinite linear;
+    z-index: 1000;
+}
+
+@keyframes refresh-loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 /* Dynamic background glow */
@@ -192,7 +217,8 @@ h1 {
     gap: 1rem;
 }
 
-.primary-btn, .close-btn {
+.primary-btn,
+.close-btn {
     flex: 1;
     padding: 0.8rem;
     border-radius: 8px;
@@ -213,7 +239,8 @@ h1 {
     color: var(--text-primary);
 }
 
-.primary-btn:hover, .close-btn:hover {
+.primary-btn:hover,
+.close-btn:hover {
     opacity: 0.8;
 }
 

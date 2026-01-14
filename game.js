@@ -134,6 +134,46 @@ function init() {
 
     // Fetch initial global score
     fetchHighestScore();
+
+    // Auto-refresh when tab becomes visible
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            fetchHighestScore();
+        }
+    });
+
+    // Pull-to-refresh support
+    initPullToRefresh();
+}
+
+let touchStartY = 0;
+function initPullToRefresh() {
+    window.addEventListener('touchstart', (e) => {
+        if (window.scrollY === 0) {
+            touchStartY = e.touches[0].clientY;
+        }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+        const touchY = e.touches[0].clientY;
+        const diff = touchY - touchStartY;
+        if (window.scrollY === 0 && diff > 100) {
+            // Potential refresh trigger
+        }
+    }, { passive: true });
+
+    window.addEventListener('touchend', async (e) => {
+        const touchY = e.changedTouches[0].clientY;
+        const diff = touchY - touchStartY;
+        if (window.scrollY === 0 && diff > 100 && !isPlaying) {
+            document.body.classList.add('refreshing');
+            await fetchHighestScore();
+            // Subtle delay for visual feedback
+            setTimeout(() => {
+                document.body.classList.remove('refreshing');
+            }, 500);
+        }
+    }, { passive: true });
 }
 
 async function fetchHighestScore() {
