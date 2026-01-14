@@ -17,7 +17,7 @@ let nickname = localStorage.getItem('simonNickname') || null;
 let isPlaying = false;
 let isShowingSequence = false;
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/Antigravity/p/petit-simon/api';
 
 // Éléments DOM
 const buttons = document.querySelectorAll('.simon-btn');
@@ -141,7 +141,7 @@ async function fetchHighestScore() {
         const response = await fetch(`${API_URL}/scores`);
         const data = await response.json();
         if (data.highest) {
-            highestValue.textContent = data.highest.nickname;
+            highestValue.textContent = `${data.highest.score} - ${data.highest.nickname}`;
         } else {
             updateHighestDisplay();
         }
@@ -153,14 +153,14 @@ async function fetchHighestScore() {
 
 function updateHighestDisplay() {
     if (nickname) {
-        highestValue.textContent = nickname;
+        highestValue.textContent = `${highscore} - ${nickname}`;
     } else {
-        highestValue.textContent = 'share your best';
+        highestValue.textContent = '0 - share your best';
     }
 }
 
 function handleHighestClick() {
-    if (!nickname || highestValue.textContent === 'share your best') {
+    if (!nickname || highestValue.textContent === '0 - share your best') {
         nicknameModal.classList.add('active');
         nicknameInput.value = '';
         nicknameInput.focus();
