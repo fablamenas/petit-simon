@@ -244,7 +244,7 @@ async function showLeaderboard() {
         const data = await response.json();
 
         leaderboardList.innerHTML = '';
-        data.top_15.forEach(entry => {
+        data.top_10.forEach(entry => {
             const li = document.createElement('li');
             li.innerHTML = `<span class="name">${entry.nickname}</span><span class="score">${entry.score}</span>`;
             leaderboardList.appendChild(li);

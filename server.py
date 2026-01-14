@@ -23,10 +23,10 @@ def get_scores():
     scores = load_scores()
     # Sort by score descending
     sorted_scores = sorted(scores, key=lambda x: x['score'], reverse=True)
-    top_15 = sorted_scores[:15]
+    top_10 = sorted_scores[:10]
     highest = sorted_scores[0] if sorted_scores else None
     return jsonify({
-        'top_15': top_15,
+        'top_10': top_10,
         'highest': highest
     })
 
