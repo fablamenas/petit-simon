@@ -178,7 +178,7 @@ function initPullToRefresh() {
 
 async function fetchHighestScore() {
     try {
-        const response = await fetch(`${API_URL}/scores`);
+        const response = await fetch(`${API_URL}/scores?t=${Date.now()}`);
         const data = await response.json();
         if (data.highest) {
             highestValue.textContent = `${data.highest.score} - ${data.highest.nickname}`;
@@ -240,7 +240,7 @@ async function shareScore(scoreToShare) {
 
 async function showLeaderboard() {
     try {
-        const response = await fetch(`${API_URL}/scores`);
+        const response = await fetch(`${API_URL}/scores?t=${Date.now()}`);
         const data = await response.json();
 
         leaderboardList.innerHTML = '';

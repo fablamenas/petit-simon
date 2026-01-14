@@ -1,10 +1,1 @@
-[
-    {
-        "nickname": "fabien",
-        "score": 1710
-    },
-    {
-        "nickname": "Fablamenas",
-        "score": 210
-    }
-]
+[{"nickname": "fabien", "score": 1710}, {"nickname": "Fablamenas", "score": 210}, {"nickname": "TestBot", "score": 5}, {"nickname": "Tester_v2", "score": 10}, {"nickname": "Tester_v2", "score": 10}, {"nickname": "Tester_v2", "score": 15}, {"nickname": "SubAgentTest", "score": 20}, {"nickname": "TestBot", "score": 30}]
